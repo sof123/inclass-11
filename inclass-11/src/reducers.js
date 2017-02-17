@@ -8,24 +8,27 @@ const Reducer = (state =  {
 }, action) => {
 	switch(action.type) {
 		case 'ADD_TODO':
-			var newState = JSON.parse(JSON.stringify(state));
-			newState.nextId +=1;
-			newState.todoItems[newState.nextId-1] = {id: newState.nextId, text: action.text, done: false}; 
-			return newState;
-			
+			return { ...state, nextId: state.nextId + 1,
+					todoItems: [ ...state.todoItems,
+						{id:state.nextId, text: action.text, done: false}]
+			}
+
 		case 'REMOVE_TODO':
 			var newState = JSON.parse(JSON.stringify(state));
 			console.log("newstate is " + newState)
 			newState.todoItems = newState.todoItems.filter((t) => t.id !== action.id);
 			return newState;
 		case 'TOGGLE_TODO':
-		
-			var newState = JSON.parse(JSON.stringify(state));
-			newState.todoItems[action.id].done = !state.todoItems[action.id].done;
-			return newState;
-		default: 
+		console.log(action.text)
+		return { ...state,
+				todoItems: state.todoItems.map(({ id, text, done }) => (
+					{ id, text, done: action.id === id ? !done : done }
+				))
+			}
+		default:
 			return state
 	}
 }
+
 
 export default Reducer
